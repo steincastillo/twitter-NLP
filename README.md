@@ -1,2 +1,2 @@
-# tweeter-NLP
-NLP (Natural Language Processing) for tweeter
+# twitter-NLP
+NLP (Natural Language Processing) for twitter
