@@ -33,10 +33,12 @@ The results will include:
 ## Configuration:
 Create a file with the name auth.py  
 add the following lines:  
-consumer_key = 'your consumer key'  
-consumer_secret = 'your consumer secret'  
-access_token = 'your access token'  
-access_token_secret = 'your token secret'  
+`consumer_key = 'your consumer key'`  
+`consumer_secret = 'your consumer secret'`  
+`access_token = 'your access token'`  
+`access_token_secret = 'your token secret'`
+
+If you need to create your consumer key click [here](https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens.html)  
   
 That´s it!  
   
@@ -54,3 +56,7 @@ _To perform text analysis on tweets:_
   
 _To plot sentiment scatter chart:_  
 `python tweets_scatter.py --file <tweets_file.csv>`  
+
+
+# Have a question or a suggestion?  
+email: contact@steincastillo.com  
