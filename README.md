@@ -17,14 +17,14 @@ The results will include:
 - Word cloud chart
 
 ## What do you need?
-Libraries:
+**Libraries:**  
 - Python 3.0 or higher
 - Twython
 - NLTK
 - Textblob
 - Wordcloud
 
-Twitter:
+**Twitter:**  
 - consumer_key 
 - consumer_secret 
 - access_token 
@@ -41,15 +41,16 @@ access_token_secret = 'your token secret'
 That´s it!  
   
 ## Usage:
-To dowload tweets:
+  
+_To dowload tweets:_  
 python tweets_get.py --user <twitter_user> [--count <number_of_tweets>]  
 note: the maximum number of tweets is 200  
  
-To analyze tweet sentiment:  
+_To analyze tweet sentiment:_  
 USAGE: python tweets_sentiment.py --file <tweets_file.csv>  
 
-To perform text analysis on tweets:  
+_To perform text analysis on tweets:_  
 python tweets_text_analysis.py --file <tweets_file.csv> --lang <en|es>  
   
-To plot sentiment scatter chart:  
+_To plot sentiment scatter chart:_  
 python tweets_scatter.py --file <tweets_file.csv>  
