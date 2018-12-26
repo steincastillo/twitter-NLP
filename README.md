@@ -31,15 +31,15 @@ Twitter:
 - access_token_secret 
 
 ## Configuration:
-Create a file with the name auth.py 
-add the following lines: 
-consumer_key = 'your consumer key' 
-consumer_secret = 'your consumer secret' 
-access_token = 'your access token' 
-access_token_secret = 'your token secret' 
-
-That´s it!
-
+Create a file with the name auth.py  
+add the following lines:  
+consumer_key = 'your consumer key'  
+consumer_secret = 'your consumer secret'  
+access_token = 'your access token'  
+access_token_secret = 'your token secret'  
+  
+That´s it!  
+  
 ## Usage:
 To dowload tweets:
 python tweets_get.py --user <twitter_user> [--count <number_of_tweets>]  
