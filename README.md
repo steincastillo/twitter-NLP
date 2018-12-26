@@ -43,14 +43,14 @@ That´s it!
 ## Usage:
   
 _To dowload tweets:_  
-python tweets_get.py --user <twitter_user> [--count <number_of_tweets>]  
+`python tweets_get.py --user <twitter_user> [--count <number_of_tweets>]`  
 note: the maximum number of tweets is 200  
  
 _To analyze tweet sentiment:_  
-USAGE: python tweets_sentiment.py --file <tweets_file.csv>  
+`python tweets_sentiment.py --file <tweets_file.csv>`  
 
 _To perform text analysis on tweets:_  
-python tweets_text_analysis.py --file <tweets_file.csv> --lang <en|es>  
+`python tweets_text_analysis.py --file <tweets_file.csv> --lang <en|es>`  
   
 _To plot sentiment scatter chart:_  
-python tweets_scatter.py --file <tweets_file.csv>  
+`python tweets_scatter.py --file <tweets_file.csv>`  
