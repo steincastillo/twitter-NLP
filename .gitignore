@@ -1,3 +1,4 @@
 *.csv
+*.txt
 auth.py
 __pycache__/
