@@ -73,6 +73,21 @@ def pList1(list):
     for item in list:
         print ('{:<20} {:^2} {:>20}'.format(item[0], '->', item[1]))
 
+def load_badwords(lang):
+    # Create the list of profanity words in different languages
+    bad_words = []
+    if lang == 'en':
+        f = open ('bad_words_en.txt', 'r')
+        bad_words = f.read()
+        f.close()
+        bad_words = nltk.word_tokenize(bad_words)
+    elif lang == 'es':
+        f = open ('bad_words_es.txt', 'r')
+        bad_words = f.read()
+        f.close()
+        bad_words = nltk.word_tokenize(bad_words)
+    return bad_words
+
 #############
 # Constants
 #############
@@ -104,9 +119,11 @@ lang = args['lang']
 # Define stopwords dictionary
 if lang.lower() == 'es':
     stop_words = set(stopwords.words('spanish'))
+    bad_words = load_badwords('es')
     print ('Using SPANISH stopwords list')
 else:
     stop_words = set(stopwords.words('english'))
+    bad_words = load_badwords('en')
     print ('Using ENGLISH stopwords list')
 
 # Validate the input file exists
@@ -170,11 +187,20 @@ text_vocab = set(tTokens)
 
 # Remove stop words
 text_nonstop = [word for word in tTokens if word not in stop_words]
+used_stopwords = [word for word in tTokens if word in stop_words]
+
+# Remove profanity
+text_no_badwords = [word for word in tTokens if word not in bad_words]
+used_bad_words = [word for word in tTokens if word in bad_words]
+print (used_bad_words)
 
 # Calculate frequency distribution
 print ('Calculating frequency distribution...')
 fdist = nltk.FreqDist(tTokens)
 fdist1 = nltk.FreqDist(text_nonstop)
+fdist2 = nltk.FreqDist(text_no_badwords)
+fdist_stopwords = nltk.FreqDist(used_stopwords)
+fdist_badwords = nltk.FreqDist(used_bad_words)
 fdist_hash = nltk.FreqDist(tHash)    # Hash frequency distribution
 fdist_at = nltk.FreqDist(tAt)       # @ frequcency distribution
 
@@ -186,13 +212,17 @@ for item in stop_words:
 
 read_time = len(tTokens)/READ_SPEED/60
 
+adj_vocab_rich = (len(text_vocab)-len(fdist_at)-len(fdist_stopwords)-len(fdist_badwords))/(len(tTokens))*100
+
 # Display text file analysis
 print ('\n****** Analysis Results *******')
 print ('Sentences: {}'.format(len(sentence_tokens)))
 print ('Words: {}'.format(len(tTokens)))
 print ('Unique words: {}'.format(len(text_vocab)))
 print ('Vocabulary richness: {:.2f}%'.format(len(text_vocab)/len(tTokens)*100))
-print ('Number of stopwords: {}'.format(len(tTokens)-len(text_nonstop)))
+print ('Number of unique stopwords: {}'.format(len(fdist_stopwords)))
+print ('Number of unique profanity words: {}'.format(len(fdist_badwords)))
+print ('Adjusted vocabulary richness: {:.2f}'.format(adj_vocab_rich))
 print ('Reading time: {:.1f} min.'.format(read_time))
 print ('\nTop 15 more common words:')
 print ('-------------------------')
@@ -200,6 +230,9 @@ pList1(fdist.most_common(15))
 print ('\nTop 15 more common nonstop words:')
 print ('-----------------------------------')
 pList1(fdist1.most_common(15))
+print ('\nTop 15 more common stop words:')
+print ('-----------------------------------')
+pList1(fdist_stopwords.most_common(15))
 print ("\nMost common #'s:")
 print ('------------------')
 pList1(fdist_hash.most_common(5))

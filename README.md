@@ -10,6 +10,7 @@ The results will include:
 - Sentence count
 - Vocabulary richnness
 - Number of stopwords used
+- Number of profanity words
 - Estimated text reading time
 - Most common words 
 - Sentiment analysis
