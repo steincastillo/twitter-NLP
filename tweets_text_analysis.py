@@ -117,6 +117,13 @@ warnings.filterwarnings("ignore")
 tweet_file = args['file']
 lang = args['lang']
 
+# Validate the input file exists
+file_check = Path(tweet_file)
+if not(file_check.is_file()):
+    # file does not exist
+    print ('[Error] File does not exist.')
+    exit()
+
 # Define stopwords dictionary
 if lang.lower() == 'es':
     stop_words = set(stopwords.words('spanish'))
@@ -127,13 +134,7 @@ else:
     bad_words = load_badwords('en')
     print ('Using ENGLISH stopwords list')
 
-# Validate the input file exists
-file_check = Path(tweet_file)
-if not(file_check.is_file()):
-    # file does not exist
-    print ('[Error] File does not exist.')
-    exit()
-
+# Print routine header
 print ('\n')
 print('*'*(22+len(tweet_file)))
 print('********** {} **********'.format(tweet_file.upper()))
