@@ -162,6 +162,9 @@ for item in PUNCTUATION:
 # Eliminate new lines
 print ('Eliminating new lines characters...')
 text = text.replace('\n', ' ')
+# Eliminate 'RT' flags
+print ('Eliminating RT flags...')
+text = text.replace('RT', '')
 # Convert to lowercase
 print ('Converting to lowercase...')
 text.casefold()
