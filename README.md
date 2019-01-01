@@ -14,7 +14,7 @@ The results will include:
 - Estimated text reading time
 - Most common words 
 - Sentiment analysis
-- Setniment analysis scatter plot
+- Sentiment analysis scatter plot
 - Word cloud chart
 
 ## What do you need?
