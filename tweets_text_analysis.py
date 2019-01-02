@@ -22,8 +22,13 @@ produce an output that includes:
 
 Requisites:
 ***********
-The input file MUST be produced with the routine tweets_get.py that is
-part of this libary as the file format is very important.
+Create a file named: auth.py
+
+add the following lines:
+consumer_key = 'your consumer key'
+consumer_secret = 'your consumer secret'
+access_token = 'your access token'
+access_token_secret = 'your token secret'
 
 The following libraries must be installed:
 - NLTK
@@ -34,7 +39,7 @@ The following libraries must be installed:
 
 USAGE: 
 ***********
-python tweets_text_analysis.py --file <tweets_file> --lang <en|es>
+python tweets_listener.py --track <keyword> --lang <en|es>
 """
 
 #############
