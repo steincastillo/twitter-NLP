@@ -84,7 +84,7 @@ def save_to_csv(tweets, filename):
 # Constants
 #############
 # These constants control the behavior the this routine. Change them accordingly.
-MAX_TWEETS = 10         # Number of tweets to download if not specified in command line
+MAX_TWEETS = 300         # Number of tweets to download if not specified in command line
 REMOVE_LINKS = True     # True if web links from message should be removed
 PRINT_OUT = True       # True if tweets should be display when processed
 FILE_DELIMITER = '|'    # CSV file delimiter
