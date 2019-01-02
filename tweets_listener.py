@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 """
 tweets_listener.py
 Date created: 30-Dec-2018
@@ -38,7 +37,7 @@ The following libraries must be installed:
 
 USAGE: 
 ***********
-python tweets_text_analysis.py --file <tweets_file> --lang <en|es>
+python tweets_listener.py --track <keyword> --lang <en|es>
 """
 
 #############
@@ -85,7 +84,7 @@ def save_to_csv(tweets, filename):
 # Constants
 #############
 # These constants control the behavior the this routine. Change them accordingly.
-MAX_TWEETS = 300         # Number of tweets to download if not specified in command line
+MAX_TWEETS = 10         # Number of tweets to download if not specified in command line
 REMOVE_LINKS = True     # True if web links from message should be removed
 PRINT_OUT = True       # True if tweets should be display when processed
 FILE_DELIMITER = '|'    # CSV file delimiter
@@ -127,6 +126,8 @@ class MyStreamer(TwythonStreamer):
             if self.count > self.maxcount:
                 self.disconnect()
                 # Save tweets to cvs file
+                print ('\n')
+                print ('*****************')
                 print ('Closing file...')
                 self.csvfile.close()
                 print ('File {} created. Process complete!'.format('listener'+'.csv'))
@@ -164,11 +165,10 @@ class MyStreamer(TwythonStreamer):
             self.csvfile.flush()
 
             # Print the message to STDOUT
-            print ('{} | {} | {} | {} | {}'.format(
+            print ('{:4d} | @{} | {} | {}'.format(
             self.count,
             self.t_user,
             self.t_full_text,
-            self.t_lang,
             self.t_in_reply_to))
             
             # Update the message counter
@@ -194,7 +194,18 @@ if __name__ == "__main__":
 
     # unpack command line arguments
     tweet_track = args['track']
-    tweet_lang = args['lang']
+    tweet_lang = args['lang'].lower()
+
+    print ('\n')
+    print ('***************************')
+    print ('*    Twitter Listener     *')
+    print ('***************************')
+
+    print ('Listening to: {}'.format(tweet_track))
+    print ('Language    : {}'.format(tweet_lang))
+    print ('Getting     : {} tweets'.format(MAX_TWEETS))
+    print ('***************************')
+    print ('\n')
 
     stream = MyStreamer()
 
