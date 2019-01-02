@@ -63,4 +63,4 @@ _To listen to tweets:_
 note: the number of tweets to listen to is controlled by a coded constant. Adjust this value to your needs  
 
 # Have a question or a suggestion? 
-Feel free to add an issue to the repo or contact me at: email: contact@steincastillo.com  
+Feel free to add an issue to the repo or contact me at: contact@steincastillo.com  
