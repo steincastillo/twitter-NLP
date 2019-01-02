@@ -58,6 +58,9 @@ _To perform text analysis on tweets:_
 _To plot sentiment scatter chart:_  
 `python tweets_scatter.py --file <tweets_file.csv>`  
 
+_To listen to tweets:_  
+`python tweets_listener.py --track <keyword> [--lang [en|es]]`  
+note: the number of tweets to listen to is controlled by a coded constant. Adjust this value to your needs  
 
 # Have a question or a suggestion?  
 email: contact@steincastillo.com  

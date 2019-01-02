@@ -22,8 +22,13 @@ produce an output that includes:
 
 Requisites:
 ***********
-The input file MUST be produced with the routine tweets_get.py that is
-part of this libary as the file format is very important.
+Create a file named: auth.py
+
+add the following lines:
+consumer_key = 'your consumer key'
+consumer_secret = 'your consumer secret'
+access_token = 'your access token'
+access_token_secret = 'your token secret'
 
 The following libraries must be installed:
 - NLTK
@@ -44,6 +49,7 @@ import argparse
 import warnings
 from pathlib import Path
 import pandas as pd
+from math import pi
 import re
 from wordcloud import WordCloud, ImageColorGenerator
 import matplotlib.pyplot as plt
@@ -116,6 +122,13 @@ warnings.filterwarnings("ignore")
 tweet_file = args['file']
 lang = args['lang']
 
+# Validate the input file exists
+file_check = Path(tweet_file)
+if not(file_check.is_file()):
+    # file does not exist
+    print ('[Error] File does not exist.')
+    exit()
+
 # Define stopwords dictionary
 if lang.lower() == 'es':
     stop_words = set(stopwords.words('spanish'))
@@ -126,13 +139,7 @@ else:
     bad_words = load_badwords('en')
     print ('Using ENGLISH stopwords list')
 
-# Validate the input file exists
-file_check = Path(tweet_file)
-if not(file_check.is_file()):
-    # file does not exist
-    print ('[Error] File does not exist.')
-    exit()
-
+# Print routine header
 print ('\n')
 print('*'*(22+len(tweet_file)))
 print('********** {} **********'.format(tweet_file.upper()))
@@ -160,6 +167,9 @@ for item in PUNCTUATION:
 # Eliminate new lines
 print ('Eliminating new lines characters...')
 text = text.replace('\n', ' ')
+# Eliminate 'RT' flags
+print ('Eliminating RT flags...')
+text = text.replace('RT', '')
 # Convert to lowercase
 print ('Converting to lowercase...')
 text.casefold()
@@ -192,7 +202,6 @@ used_stopwords = [word for word in tTokens if word in stop_words]
 # Remove profanity
 text_no_badwords = [word for word in tTokens if word not in bad_words]
 used_bad_words = [word for word in tTokens if word in bad_words]
-print (used_bad_words)
 
 # Calculate frequency distribution
 print ('Calculating frequency distribution...')
@@ -216,21 +225,22 @@ adj_vocab_rich = (len(text_vocab)-len(fdist_at)-len(fdist_stopwords)-len(fdist_b
 
 # Display text file analysis
 print ('\n****** Analysis Results *******')
-print ('Sentences: {}'.format(len(sentence_tokens)))
-print ('Words: {}'.format(len(tTokens)))
-print ('Unique words: {}'.format(len(text_vocab)))
-print ('Vocabulary richness: {:.2f}%'.format(len(text_vocab)/len(tTokens)*100))
-print ('Number of unique stopwords: {}'.format(len(fdist_stopwords)))
-print ('Number of unique profanity words: {}'.format(len(fdist_badwords)))
+print ('Sentences                   : {}'.format(len(sentence_tokens)))
+print ('Total words                 : {}'.format(len(tTokens)))
+print ('Unique words                : {}'.format(len(text_vocab)))
+print ('Vocabulary richness         : {:.2f}%'.format(len(text_vocab)/len(tTokens)*100))
+print ('Unique stopwords            : {}'.format(len(fdist_stopwords)))
+print ('Unique profanity words      : {}'.format(len(fdist_badwords)))
 print ('Adjusted vocabulary richness: {:.2f}'.format(adj_vocab_rich))
-print ('Reading time: {:.1f} min.'.format(read_time))
-print ('\nTop 15 more common words:')
+print ('Reading time                : {:.1f} min.'.format(read_time))
+print ('*********************************')
+print ('\n15 most common words:')
 print ('-------------------------')
 pList1(fdist.most_common(15))
-print ('\nTop 15 more common nonstop words:')
+print ('\n15 most common nonstop words:')
 print ('-----------------------------------')
 pList1(fdist1.most_common(15))
-print ('\nTop 15 more common stop words:')
+print ('\n15 most common stop words:')
 print ('-----------------------------------')
 pList1(fdist_stopwords.most_common(15))
 print ("\nMost common #'s:")
