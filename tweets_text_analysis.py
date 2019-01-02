@@ -39,7 +39,7 @@ The following libraries must be installed:
 
 USAGE: 
 ***********
-python tweets_listener.py --track <keyword> --lang <en|es>
+python tweets_text_analysis.py --file <tweets_file> --lang <en|es>
 """
 
 #############
