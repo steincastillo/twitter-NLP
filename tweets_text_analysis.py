@@ -200,8 +200,8 @@ text_nonstop = [word for word in tTokens if word not in stop_words]
 used_stopwords = [word for word in tTokens if word in stop_words]
 
 # Remove profanity
-text_no_badwords = [word for word in tTokens if word not in bad_words]
-used_bad_words = [word for word in tTokens if word in bad_words]
+text_no_badwords = [word for word in tTokens if word.lower() not in bad_words]
+used_bad_words = [word for word in tTokens if word.lower() in bad_words]
 
 # Calculate frequency distribution
 print ('Calculating frequency distribution...')
@@ -230,7 +230,9 @@ print ('Total words                 : {}'.format(len(tTokens)))
 print ('Unique words                : {}'.format(len(text_vocab)))
 print ('Vocabulary richness         : {:.2f}%'.format(len(text_vocab)/len(tTokens)*100))
 print ('Unique stopwords            : {}'.format(len(fdist_stopwords)))
+print ('Total stopwords             : {}'.format(len(used_stopwords)))
 print ('Unique profanity words      : {}'.format(len(fdist_badwords)))
+print ('Total profanity words       : {}'.format(len(used_bad_words)))
 print ('Adjusted vocabulary richness: {:.2f}'.format(adj_vocab_rich))
 print ('Reading time                : {:.1f} min.'.format(read_time))
 print ('*********************************')
