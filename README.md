@@ -66,5 +66,5 @@ note: the number of tweets to listen to is controlled by a coded constant. Adjus
 Feel free to add an issue to the repo or contact me at: contact@steincastillo.com 
 
 ## Profanity warning
-Please be advise that this repository contains files with a list of profanity words used in english (US) and spanish (MX)
-the only purpose of these files is to conduct NLP research on texts and should be treated as such.
+Please be advise that this repository contains files with a list of profanity words used in english (US) and spanish (MX).
+The only purpose of these files is to conduct NLP research and analisys on texts and should be treated as such.
