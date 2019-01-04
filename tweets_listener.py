@@ -187,7 +187,7 @@ if __name__ == "__main__":
     #construct the command line argument parser and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument('-t', '--track', required=True,
-        help='usage: python tweets_sentiment.py --track <keyword> --lang <es|en>')
+        help='usage: python tweets_listener.py --track <keyword> --lang <es|en>')
     ap.add_argument('-l', '--lang', default='en', required=False)
     args = vars(ap.parse_args())
     warnings.filterwarnings("ignore")
