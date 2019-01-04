@@ -101,7 +101,7 @@ def load_badwords(lang):
 PRINT_OUT = True       # True if tweets should be display when processed
 FILE_DELIMITER = '|'    # CSV file delimiter
 FILE_ENCODING = 'utf-8'
-PUNCTUATION = [',', '.', '"', '“', '”', '!', '?', ':', '...', ';']  # Punctiation symbols to eliminate
+PUNCTUATION = [',', '.', '"', '“', '”', '!', '?', ':', '...', ';', "'", "’"]  # Punctiation symbols to eliminate
 CLOUD_WORDS = 50        # Number of words to draw in the word cloud
 READ_SPEED = 3      # 3 words per second
 
