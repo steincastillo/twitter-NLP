@@ -106,7 +106,7 @@ def remove_links(text):
 #############
 # These constants control the behavior the this routine. Change them accordingly.
 PRINT_OUT = False       # True if tweets should be display when processed
-PUNCTUATION = [',', '.', '"', '“', '”', '!', '?', ':', '...', ';', "'", "’"]  # Punctuation symbols to eliminate
+PUNCTUATION = [',', '.', '"', '“', '”', '!', '¡', '?', '¿', ':', '...', ';', "'", "’", '…']  # Punctuation symbols to eliminate
 CLOUD_WORDS = 50        # Number of words to draw in the word cloud
 READ_SPEED = 3      # 3 words per second
 
@@ -161,11 +161,12 @@ for tweet in tweets:
     if tweet['truncated']:
         line = tweet['extended_tweet']['full_text']
     else:
-        line = tweet['full_text']
+        line = tweet['text']
     # Remove leading and trailing spaces
     line = line.strip()
     # Remove links
     line = remove_links(line)
+    print (line)
     # Add line to text body
     text = text + line + '\n'
 

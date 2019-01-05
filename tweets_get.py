@@ -69,7 +69,7 @@ def remove_regex(input_text, regex_pattern):
 #############
 # These constants control the behavior the this routine. Change them accordingly.
 MIN_TWEETS = 10         # Number of tweets to download in not specified in command line
-PRINT_OUT = True        # Display retrieved tweets?
+PRINT_OUT = False        # Display retrieved tweets?
 
 #############
 # Main Loop
