@@ -50,13 +50,13 @@ _To dowload tweets:_
 note: the maximum number of tweets is 200  
  
 _To analyze tweet sentiment:_  
-`python tweets_sentiment.py --file <tweets_file.csv>`  
+`python tweets_sentiment.py --file <tweets_file.json>`  
 
 _To perform text analysis on tweets:_  
-`python tweets_text_analysis.py --file <tweets_file.csv> --lang <en|es>`  
+`python tweets_text_analysis.py --file <tweets_file.json> --lang <en|es>`  
   
 _To plot sentiment scatter chart:_  
-`python tweets_scatter.py --file <tweets_file.csv>`  
+`python tweets_scatter.py --file <tweets_file.json>`  
 
 _To listen to tweets:_  
 `python tweets_listener.py --track <keyword> [--lang [en|es]]`  

@@ -116,7 +116,6 @@ class MyStreamer(TwythonStreamer):
                 print ('Creating JSON file...')
                 with open('listener.json', 'w', encoding='utf-8') as file:
                     json.dump(self.tweet_list, file, sort_keys=True, indent=4)
-                # self.csvfile.close()
                 print ('File {} created. Process complete!'.format('listener'+'.json'))
                 return False
             
