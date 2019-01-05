@@ -4,7 +4,7 @@
 """
 get_tweets.py
 Date created: 10-Nov-2018
-Version: 1.7
+Version: 2.0
 Author: Stein Castillo
 Copyright 2018 Stein Castillo <stein_castillo@yahoo.com>  
 
@@ -39,7 +39,7 @@ note: the maximum number of tweets is 200
 #############
 from twython import Twython
 import re
-import csv
+import json
 import argparse
 import warnings
 
@@ -64,27 +64,21 @@ def remove_regex(input_text, regex_pattern):
 
     return input_text
 
-def save_to_csv(tweets, filename):
-    # Create file
-    with open(filename+'.csv', 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile, delimiter=FILE_DELIMITER)
-        for item in tweets:
-            writer.writerow(item)   
-    csvfile.close()
-    return
-
 #############
 # Constants
 #############
 # These constants control the behavior the this routine. Change them accordingly.
 MIN_TWEETS = 10         # Number of tweets to download in not specified in command line
-REMOVE_LINKS = True     # True if web links from message should be removed
-PRINT_OUT = False       # True if tweets should be display when processed
-FILE_DELIMITER = '|'    # CSV file delimiter
 
 #############
 # Main Loop
 #############
+
+print ('\n')
+print ('***************************')
+print ('*    Twitter Download     *')
+print ('***************************')
+print ('\n')
 
 #construct the command line argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -95,7 +89,7 @@ args = vars(ap.parse_args())
 warnings.filterwarnings("ignore")
 
 # unpack command line arguments
-user = args["user"]
+user = args["user"].lower()
 count = args['count']
 
 # Validate number of tweets to get
@@ -131,13 +125,13 @@ if user_details[0]['statuses_count'] < count:
     print ('User does not have enough tweets, Adjusting...')
     count = user_details[0]['statuses_count']
 
-# Print details of tweets to get
 print ('Downloading {} tweet(s) of:'.format(count))    
 print ('id: {} | name: {} | screen name: {} | Tweets: {}'.format(
         user_details[0]['id'],
         user_details[0]['name'],
         user_details[0]['screen_name'],
         user_details[0]['statuses_count']))
+print ('\n')
 
 # Get user timeline
 try:
@@ -148,52 +142,60 @@ try:
 except:
     raise ValueError('Tweets could not be retrived!')
 
-# Pre-proccess tweets
-print('Pre-processing tweets...')
+# Save tweets to JSON file
+print ('Creating JSON file...')
+filename = user+'.json'
 
-if PRINT_OUT:
-    print('ID | Full text | Lang')
+with open(filename, 'w', encoding='utf-8') as file:
+    json.dump(user_timeline, file, sort_keys = True, indent= 4)
+
+print ('File {} created. Process complete!'.format(filename))
+
+# # Pre-proccess tweets
+# print('Pre-processing tweets...')
+
+# if PRINT_OUT:
+#     print('ID | Full text | Lang')
  
-tweet_list = []
+# tweet_list = []
     
-for tweet in user_timeline:
-    # Get tweet ID
-    t_id = tweet['id']
-    t_lang = tweet['lang']
+# for tweet in user_timeline:
+#     # Get tweet ID
+#     t_id = tweet['id']
+#     t_lang = tweet['lang']
     
-    # Get tweet text
-    if tweet['retweeted']:
-        t_full_text = tweet['retweeted_status']['full_text']
-    else:
-        t_full_text = tweet['full_text']
+#     # Get tweet text
+#     if tweet['retweeted']:
+#         t_full_text = tweet['retweeted_status']['full_text']
+#     else:
+#         t_full_text = tweet['full_text']
     
-    # Remove links from the tweet text    
-    if REMOVE_LINKS:
-        t_full_text = remove_regex(t_full_text, 'http\S+')
+#     # Remove links from the tweet text    
+#     if REMOVE_LINKS:
+#         t_full_text = remove_regex(t_full_text, 'http\S+')
         
-    # Remove leading and trailing spaces from message
-    t_full_text = t_full_text.strip()
+#     # Remove leading and trailing spaces from message
+#     t_full_text = t_full_text.strip()
         
-    # get in reply of tweet id
-    if not(tweet['in_reply_to_status_id'] == None):
-        t_in_reply_to = tweet['in_reply_to_status_id']
-    else:
-        t_in_reply_to =  'None'
+#     # get in reply of tweet id
+#     if not(tweet['in_reply_to_status_id'] == None):
+#         t_in_reply_to = tweet['in_reply_to_status_id']
+#     else:
+#         t_in_reply_to =  'None'
     
-    # Create the line for the CSV file                        
-    line = [t_id, t_full_text, t_lang, t_in_reply_to]
-    tweet_list.append(line)
+#     # Create the line for the CSV file                        
+#     line = [t_id, t_full_text, t_lang, t_in_reply_to]
+#     tweet_list.append(line)
         
-    if PRINT_OUT:
-        print ('...{} | {} | {} | {}'.format(
-                str(t_id)[-4:],
-                t_full_text,
-                t_lang,
-                t_in_reply_to))
+#     if PRINT_OUT:
+#         print ('...{} | {} | {} | {}'.format(
+#                 str(t_id)[-4:],
+#                 t_full_text,
+#                 t_lang,
+#                 t_in_reply_to))
 
-print ('Pre-processing complete!')
+# print ('Pre-processing complete!')
 
-# Save tweets to cvs file
-print ('Creating csv file...')
-save_to_csv(tweet_list, user)
-print ('File {} created. Process complete!'.format(user+'.csv'))
+# # Save tweets to cvs file
+# print ('Creating csv file...')
+# save_to_csv(tweet_list, user)
