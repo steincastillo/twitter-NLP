@@ -47,6 +47,7 @@ python tweets_text_analysis.py --file <tweets_file> --lang <en|es>
 #############
 import argparse
 import warnings
+import json
 from pathlib import Path
 import pandas as pd
 from math import pi
@@ -60,14 +61,11 @@ from nltk.corpus import stopwords
 #############
 # Functions
 #############
-def read_csv(csv_file):
-    # Read the tweet file
-    pullData = pd.read_csv(csv_file, 
-                               delimiter=FILE_DELIMITER,
-                               header=None,
-                               encoding=FILE_ENCODING,
-                               na_filter = False)
-    return (pullData)
+
+def read_json(json_file):
+    with open(json_file) as file:
+        list = json.load(file)
+    return list
 
 def pList(list):
     # Print a formated list of tuples
@@ -94,20 +92,27 @@ def load_badwords(lang):
         bad_words = nltk.word_tokenize(bad_words)
     return bad_words
 
+def remove_links(text):
+    urls = re.finditer('http\S+', text)
+    for i in urls:
+        try:
+            text = re.sub(i.group().strip(), '', text)
+        except:
+            pass      
+    return (text)
+
 #############
 # Constants
 #############
 # These constants control the behavior the this routine. Change them accordingly.
-PRINT_OUT = True       # True if tweets should be display when processed
-FILE_DELIMITER = '|'    # CSV file delimiter
-FILE_ENCODING = 'utf-8'
-PUNCTUATION = [',', '.', '"', '“', '”', '!', '?', ':', '...', ';', "'", "’"]  # Punctiation symbols to eliminate
+PRINT_OUT = False       # True if tweets should be display when processed
+PUNCTUATION = [',', '.', '"', '“', '”', '!', '?', ':', '...', ';', "'", "’"]  # Punctuation symbols to eliminate
 CLOUD_WORDS = 50        # Number of words to draw in the word cloud
 READ_SPEED = 3      # 3 words per second
 
 ################
 # Main Loop
-###############
+################
 
 #construct the command line argument parser and parse the arguments
 ap = argparse.ArgumentParser()
@@ -115,7 +120,6 @@ ap.add_argument('-f', '--file', required=True,
     help='usage: python tweets_sentiment.py --file <file> --lang <es|en>')
 ap.add_argument('-l', '--lang', default='en', required=False)
 args = vars(ap.parse_args())
-
 warnings.filterwarnings("ignore")
 
 # unpack command line arguments
@@ -148,13 +152,22 @@ print ('\n')
 
 # Read the tweets file
 print ('Reading tweets file...')
-tweets = read_csv(tweet_file)
+tweets = read_json(tweet_file)
 
-# Extract tweets text
+# Extract and pre-process tweets text
 print ('Extracting text from tweets...')
 text = ''
-for index, line in tweets.iterrows():
-    text = text + '\n' + line[1]
+for tweet in tweets:
+    if tweet['truncated']:
+        line = tweet['extended_tweet']['full_text']
+    else:
+        line = tweet['full_text']
+    # Remove leading and trailing spaces
+    line = line.strip()
+    # Remove links
+    line = remove_links(line)
+    # Add line to text body
+    text = text + line + '\n'
 
 text_raw = text    
 
@@ -171,8 +184,8 @@ text = text.replace('\n', ' ')
 print ('Eliminating RT flags...')
 text = text.replace('RT', '')
 # Convert to lowercase
-print ('Converting to lowercase...')
-text.casefold()
+# print ('Converting to lowercase...')
+# text.casefold()
 
 # Tokenize words 
 print ('Tokenizing tweets...')

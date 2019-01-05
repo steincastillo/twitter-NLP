@@ -69,6 +69,7 @@ def remove_regex(input_text, regex_pattern):
 #############
 # These constants control the behavior the this routine. Change them accordingly.
 MIN_TWEETS = 10         # Number of tweets to download in not specified in command line
+PRINT_OUT = True        # Display retrieved tweets?
 
 #############
 # Main Loop
@@ -127,11 +128,12 @@ if user_details[0]['statuses_count'] < count:
     count = user_details[0]['statuses_count']
 
 print ('Downloading {} tweet(s) of:'.format(count))    
-print ('id: {} | name: {} | screen name: {} | Tweets: {}'.format(
+print ('id: {} | name: {} | screen name: {} | Tweets: {} | Followers: {}'.format(
         user_details[0]['id'],
         user_details[0]['name'],
         user_details[0]['screen_name'],
-        user_details[0]['statuses_count']))
+        user_details[0]['statuses_count'],
+        user_details[0]['followers_count']))
 print ('\n')
 
 # Get user timeline
@@ -142,6 +144,16 @@ try:
     print ('Tweets succesfully retrieved!')
 except:
     raise ValueError('Tweets could not be retrived!')
+
+# Display retrieved tweets
+if PRINT_OUT:
+    print ('\n')
+    for tweet in user_timeline:
+        print ('...{} | {}... |'.format(
+            tweet['id_str'][-4:],
+            tweet['full_text'][0:90].replace('\n', ' ')
+        ))
+    print ('\n')
 
 # Save tweets to JSON file
 print ('Creating JSON file...')
@@ -195,8 +207,3 @@ print ('File {} created. Process complete!'.format(filename))
 #                 t_lang,
 #                 t_in_reply_to))
 
-# print ('Pre-processing complete!')
-
-# # Save tweets to cvs file
-# print ('Creating csv file...')
-# save_to_csv(tweet_list, user)
