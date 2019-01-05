@@ -10,7 +10,7 @@ Copyright 2018 Stein Castillo <stein_castillo@yahoo.com>
 
 Summary:
 ************
-This routine will fetch the tweets of an specific user and create a CSV file
+This routine will fetch the tweets of an specific user and create a JSON file
 with the results. This file can be used with the analysis tools of this libary:
     * tweets_sentiment.py : Analyze tweets sentiment
     * tweets_text_analisys.py: Text analysis
@@ -111,18 +111,19 @@ user_details = []
 try:
     user_details = twitter.lookup_user(screen_name=user)
 except:
-    raise ValueError ('user name not found in twitter!')
+    print ('[ERROR] User name not found in twitter!')
+    exit()
 
 if len(user_details) == 0:
-    print ('User name not found in twitter!')
+    print ('[ERROR] User name not found in twitter!')
     exit(0)
 
 # Validate user has enough tweets to download
 if count > 200:
-    print ('tweet count cannot be greater that 200. Adjusting')
+    print ('[WARNING] Tweet count cannot be greater that 200. Adjusting...')
     count = 200
 if user_details[0]['statuses_count'] < count:
-    print ('User does not have enough tweets, Adjusting...')
+    print ('[WARNING] User does not have enough tweets, Adjusting...')
     count = user_details[0]['statuses_count']
 
 print ('Downloading {} tweet(s) of:'.format(count))    
