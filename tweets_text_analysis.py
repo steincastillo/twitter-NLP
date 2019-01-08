@@ -161,7 +161,7 @@ for tweet in tweets:
     if tweet['truncated']:
         line = tweet['extended_tweet']['full_text']
     else:
-        line = tweet['text']
+        line = tweet['full_text']
     # Remove leading and trailing spaces
     line = line.strip()
     # Remove links
