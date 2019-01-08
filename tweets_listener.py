@@ -145,6 +145,7 @@ if __name__ == "__main__":
     ap.add_argument('-t', '--track', required=True,
         help='usage: python tweets_sentiment.py --track <keyword> [--count <count>] [--lang <es|en>]')
     ap.add_argument('-c', '--count', default = '10', required=False)
+        help='usage: python tweets_listener.py --track <keyword> --lang <es|en>')
     ap.add_argument('-l', '--lang', default='en', required=False)
     
     args = vars(ap.parse_args())
