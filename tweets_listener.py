@@ -27,7 +27,6 @@ consumer_secret = 'your consumer secret'
 access_token = 'your access token'
 access_token_secret = 'your token secret'
 
-
 The following libraries must be installed:
 - NLTK
 - Textblob
@@ -121,37 +120,6 @@ class MyStreamer(TwythonStreamer):
             
             self.tweet_list.append(self.tweet)
 
-            # # Process tweet information
-            # self.t_id = self.tweet['id']
-            # self.t_lang = self.tweet['lang']
-            # self.t_loc = self.tweet['user']['location']
-            # self.t_user = self.tweet['user']['screen_name']
-    
-            # # Get tweet text
-            # if self.tweet['truncated']:
-            #     self.t_full_text = self.tweet['extended_tweet']['full_text']
-            # else:
-            #     self.t_full_text = self.tweet['text']
-
-            # # get in reply of tweet id
-            # if not(self.tweet['in_reply_to_status_id'] == None):
-            #     self.t_in_reply_to = self.tweet['in_reply_to_status_id']
-            # else:
-            #     self.t_in_reply_to =  'None'
-
-            # # Remove links from the tweet text    
-            # self.t_full_text = self.remove_links(self.t_full_text)
-
-            # # Remove leading and trailing spaces from message
-            # self.t_full_text = self.t_full_text.strip()
-
-            # # Create the line for the CSV file                        
-            # self.line = [self.t_id, self.t_full_text, self.t_lang, self.t_in_reply_to]
-
-            # # Write the line to the CSV file
-            # self.writer.writerow(self.line)
-            # self.csvfile.flush()
-
             # Print the message to STDOUT
             print ('{:4d} | ...{} | @{} | {}'.format(
             self.count,
@@ -191,7 +159,6 @@ if __name__ == "__main__":
         max_tweets = int(tweet_count)
     else:
         max_tweets = DEFAULT_TWEETS
-
 
     print ('\n')
     print ('***************************')

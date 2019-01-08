@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 """
 tweets_sentiment.py
 Date created: 22-Nov-2018

@@ -45,13 +45,6 @@ from matplotlib import style
 from textblob import TextBlob
 
 #############
-# Constants
-#############
-# These constants control the behavior the this routine. Change them accordingly.
-PRINT_OUT = False       # True if tweets should be display when processed
-UPDATE_FILE = True     # True if JSON file is updated with sentiment calculation
-
-#############
 # Main Loop
 #############
 
@@ -75,10 +68,6 @@ if not(file_check.is_file()):
 # Read the tweets file
 print ('Reading tweets file...')
 tweets = pd.read_json(tweet_file)
-
-# Eliminate unnecesary features
-# for feature in FEATURES:
-#     tweets = tweets.drop(feature, axis=1)
 
 # Validate sentiment analysis is done
 if 'sentiment' not in tweets:

@@ -63,6 +63,7 @@ from nltk.corpus import stopwords
 #############
 
 def read_json(json_file):
+    # Read a json file
     with open(json_file) as file:
         list = json.load(file)
     return list
@@ -137,11 +138,11 @@ if not(file_check.is_file()):
 if lang.lower() == 'es':
     stop_words = set(stopwords.words('spanish'))
     bad_words = load_badwords('es')
-    print ('Using SPANISH stopwords list')
+    print ('Using SPANISH stopwords/profanity list')
 else:
     stop_words = set(stopwords.words('english'))
     bad_words = load_badwords('en')
-    print ('Using ENGLISH stopwords list')
+    print ('Using ENGLISH stopwords/profanity list')
 
 # Print routine header
 print ('\n')
