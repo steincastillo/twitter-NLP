@@ -4,14 +4,14 @@
 """
 tweets_listener.py
 Date created: 30-Dec-2018
-Version: 1.0
+Version: 1.5
 Author: Stein Castillo
 Copyright 2018 Stein Castillo <stein_castillo@yahoo.com>  
 
 Summary:
 *********
 This routine will listen to twitter live feed, collect the tweets and save
-them to a CSV file that can be later be used to perform NLP analysis.
+them to a JSON file that can be later be used to perform NLP analysis.
 
 It will take two parameters:
 Track: (Mandatory) that determines the key word to listen to
@@ -26,7 +26,6 @@ consumer_key = 'your consumer key'
 consumer_secret = 'your consumer secret'
 access_token = 'your access token'
 access_token_secret = 'your token secret'
-
 
 The following libraries must be installed:
 - NLTK
@@ -49,8 +48,7 @@ from textblob import TextBlob
 import argparse
 import warnings
 import re
-import csv
-import pandas as pd
+import json
 
 # Get Twitter authentication credentials
 from auth import (
@@ -71,23 +69,13 @@ def remove_regex(input_text, regex_pattern):
 
     return input_text
 
-def save_to_csv(tweets, filename):
-    # Create file
-    with open(filename+'.csv', 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile, delimiter=FILE_DELIMITER)
-        for item in tweets:
-            writer.writerow(item)   
-    csvfile.close()
-    return
-
 #############
 # Constants
 #############
 # These constants control the behavior the this routine. Change them accordingly.
-MAX_TWEETS = 300         # Number of tweets to download if not specified in command line
+DEFAULT_TWEETS = 10     # Number of tweets to download if value is invalid or not provided
 REMOVE_LINKS = True     # True if web links from message should be removed
 PRINT_OUT = True       # True if tweets should be display when processed
-FILE_DELIMITER = '|'    # CSV file delimiter
 
 #############
 # Classes
@@ -102,12 +90,8 @@ class MyStreamer(TwythonStreamer):
                                     access_token,
                                     access_token_secret)
         self.tweet_list = []
-        self.maxcount = MAX_TWEETS 
+        self.maxcount = max_tweets 
         self.count = 1
-        self.DELIMITER = '|'
-        # Create file
-        self.csvfile = open('listener.csv', 'w', newline='', encoding='utf-8')
-        self.writer = csv.writer(self.csvfile, delimiter = self.DELIMITER)
 
     def remove_links(self, text):
         self._input_text = text
@@ -125,51 +109,23 @@ class MyStreamer(TwythonStreamer):
             
             if self.count > self.maxcount:
                 self.disconnect()
-                # Save tweets to cvs file
+                # Save tweets to JSON file
                 print ('\n')
                 print ('*****************')
-                print ('Closing file...')
-                self.csvfile.close()
-                print ('File {} created. Process complete!'.format('listener'+'.csv'))
+                print ('Creating JSON file...')
+                with open('listener.json', 'w', encoding='utf-8') as file:
+                    json.dump(self.tweet_list, file, sort_keys=True, indent=4)
+                print ('File {} created. Process complete!'.format('listener'+'.json'))
                 return False
             
-            # Process tweet information
-            self.t_id = self.tweet['id']
-            self.t_lang = self.tweet['lang']
-            self.t_loc = self.tweet['user']['location']
-            self.t_user = self.tweet['user']['screen_name']
-    
-            # Get tweet text
-            if self.tweet['truncated']:
-                self.t_full_text = self.tweet['extended_tweet']['full_text']
-            else:
-                self.t_full_text = self.tweet['text']
-
-            # get in reply of tweet id
-            if not(self.tweet['in_reply_to_status_id'] == None):
-                self.t_in_reply_to = self.tweet['in_reply_to_status_id']
-            else:
-                self.t_in_reply_to =  'None'
-
-            # Remove links from the tweet text    
-            self.t_full_text = self.remove_links(self.t_full_text)
-
-            # Remove leading and trailing spaces from message
-            self.t_full_text = self.t_full_text.strip()
-
-            # Create the line for the CSV file                        
-            self.line = [self.t_id, self.t_full_text, self.t_lang, self.t_in_reply_to]
-
-            # Write the line to the CSV file
-            self.writer.writerow(self.line)
-            self.csvfile.flush()
+            self.tweet_list.append(self.tweet)
 
             # Print the message to STDOUT
-            print ('{:4d} | @{} | {} | {}'.format(
+            print ('{:4d} | ...{} | @{} | {}'.format(
             self.count,
-            self.t_user,
-            self.t_full_text,
-            self.t_in_reply_to))
+            self.tweet['id_str'][-4:],
+            self.tweet['user']['screen_name'],
+            self.tweet['text'][0:90].replace('\n', ' ')))
             
             # Update the message counter
             self.count += 1
@@ -187,14 +143,23 @@ if __name__ == "__main__":
     #construct the command line argument parser and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument('-t', '--track', required=True,
+        help='usage: python tweets_sentiment.py --track <keyword> [--count <count>] [--lang <es|en>]')
+    ap.add_argument('-c', '--count', default = '10', required=False)
         help='usage: python tweets_listener.py --track <keyword> --lang <es|en>')
     ap.add_argument('-l', '--lang', default='en', required=False)
+    
     args = vars(ap.parse_args())
     warnings.filterwarnings("ignore")
 
     # unpack command line arguments
     tweet_track = args['track']
     tweet_lang = args['lang'].lower()
+    tweet_count = args['count']
+
+    if tweet_count.isdigit():
+        max_tweets = int(tweet_count)
+    else:
+        max_tweets = DEFAULT_TWEETS
 
     print ('\n')
     print ('***************************')
@@ -203,7 +168,7 @@ if __name__ == "__main__":
 
     print ('Listening to: {}'.format(tweet_track))
     print ('Language    : {}'.format(tweet_lang))
-    print ('Getting     : {} tweets'.format(MAX_TWEETS))
+    print ('Getting     : {} tweets'.format(max_tweets))
     print ('***************************')
     print ('\n')
 
