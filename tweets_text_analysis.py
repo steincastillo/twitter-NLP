@@ -201,12 +201,16 @@ for tweet in tweets:
     # Add line to text body
     text = text + line + '\n'
 
-text_raw = text    
-
 print ('Pre-processing file...')
 # Remove non-ascii characters
 print ('Removing non-ascii characters...')
 text = NormalizeText.remove_nonascii(text)
+# Replace accent and special character
+print ('Replacing special characters...')
+text = NormalizeText.remove_special(text)
+
+text_raw = text
+
 # Eliminate the punctuation signs
 print ('Eliminating punctuation signs...')
 for item in PUNCTUATION:
@@ -220,9 +224,7 @@ text = NormalizeText.remove_flags(text)
 # Converting to lowercase
 print ('Converting to lowercase...')
 text = NormalizeText.to_lowercase(text)
-# Replace accent and special character
-print ('Replacing special characters...')
-text = NormalizeText.remove_special(text)
+
 
 # Tokenize words 
 print ('Tokenizing tweets...')
