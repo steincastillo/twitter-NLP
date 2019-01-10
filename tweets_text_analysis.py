@@ -111,6 +111,34 @@ PUNCTUATION = [',', '.', '"', '“', '”', '!', '¡', '?', '¿', ':', '...', ';
 CLOUD_WORDS = 50        # Number of words to draw in the word cloud
 READ_SPEED = 3      # 3 words per second
 
+#############
+# Classes
+#############
+class NormalizeText():   
+    def remove_special(s):
+        # Special characters dictionary
+        SPECIAL_CHARS = {'á':'a', 'é':'e', 'í':'i', 'ó':'o', 'ú':'u', 'ü':'u',
+                         'Á':'A', 'É':'E', 'Í':'I', 'Ó':'O', 'Ú':'U'}
+        for char in SPECIAL_CHARS:
+            s = s.replace(char, SPECIAL_CHARS[char])
+        return s
+
+    def to_lowercase(s):
+        # Convert text to lowercase
+        s = s.casefold()
+        return s
+
+    def remove_flags(s):
+        # Flags dictionary
+        FLAGS = {'RT':''}
+        for flag in FLAGS:
+            s = s.replace(flag, FLAGS[flag])
+        return s
+
+    def remove_nonascii(s):
+        s = re.sub(r'[^\x00-\x7f]',r'', s)
+        return s
+
 ################
 # Main Loop
 ################
@@ -118,14 +146,14 @@ READ_SPEED = 3      # 3 words per second
 #construct the command line argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-f', '--file', required=True,
-    help='usage: python tweets_sentiment.py --file <file> --lang <es|en>')
+    help='usage: python tweets_text_analysis.py --file <file> --lang <es|en>')
 ap.add_argument('-l', '--lang', default='en', required=False)
 args = vars(ap.parse_args())
 warnings.filterwarnings("ignore")
 
 # unpack command line arguments
 tweet_file = args['file']
-lang = args['lang']
+lang = args['lang'].lower()
 
 # Validate the input file exists
 file_check = Path(tweet_file)
@@ -135,14 +163,14 @@ if not(file_check.is_file()):
     exit()
 
 # Define stopwords dictionary
-if lang.lower() == 'es':
+if lang == 'es':
     stop_words = set(stopwords.words('spanish'))
     bad_words = load_badwords('es')
-    print ('Using SPANISH stopwords/profanity list')
+    print ('Using SPANISH stopwords/profanity dictionary')
 else:
     stop_words = set(stopwords.words('english'))
     bad_words = load_badwords('en')
-    print ('Using ENGLISH stopwords/profanity list')
+    print ('Using ENGLISH stopwords/profanity dictionary')
 
 # Print routine header
 print ('\n')
@@ -161,20 +189,24 @@ text = ''
 for tweet in tweets:
     if tweet['truncated']:
         line = tweet['extended_tweet']['full_text']
+    elif 'text' in tweet:
+        line = tweet['text']
     else:
         line = tweet['full_text']
     # Remove leading and trailing spaces
     line = line.strip()
     # Remove links
     line = remove_links(line)
-    print (line)
+    # print (line)
     # Add line to text body
     text = text + line + '\n'
 
 text_raw = text    
 
-print ('Pre-processing the file...')
-
+print ('Pre-processing file...')
+# Remove non-ascii characters
+print ('Removing non-ascii characters...')
+text = NormalizeText.remove_nonascii(text)
 # Eliminate the punctuation signs
 print ('Eliminating punctuation signs...')
 for item in PUNCTUATION:
@@ -184,10 +216,13 @@ print ('Eliminating new lines characters...')
 text = text.replace('\n', ' ')
 # Eliminate 'RT' flags
 print ('Eliminating RT flags...')
-text = text.replace('RT', '')
-# Convert to lowercase
-# print ('Converting to lowercase...')
-# text.casefold()
+text = NormalizeText.remove_flags(text)
+# Converting to lowercase
+print ('Converting to lowercase...')
+text = NormalizeText.to_lowercase(text)
+# Replace accent and special character
+print ('Replacing special characters...')
+text = NormalizeText.remove_special(text)
 
 # Tokenize words 
 print ('Tokenizing tweets...')
