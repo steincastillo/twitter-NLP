@@ -52,6 +52,34 @@ UPDATE_FILE = True     # True if JSON file is updated with sentiment calculation
 FILE_ENCODING = 'utf-8'
 
 #############
+# Classes
+#############
+class NormalizeText():   
+    def remove_special(s):
+        # Special characters dictionary
+        SPECIAL_CHARS = {'á':'a', 'é':'e', 'í':'i', 'ó':'o', 'ú':'u', 'ü':'u',
+                         'Á':'A', 'É':'E', 'Í':'I', 'Ó':'O', 'Ú':'U'}
+        for char in SPECIAL_CHARS:
+            s = s.replace(char, SPECIAL_CHARS[char])
+        return s
+
+    def to_lowercase(s):
+        # Convert text to lowercase
+        s = s.casefold()
+        return s
+
+    def remove_flags(s):
+        # Flags dictionary
+        FLAGS = {'RT':''}
+        for flag in FLAGS:
+            s = s.replace(flag, FLAGS[flag])
+        return s
+
+    def remove_nonascii(s):
+        s = re.sub(r'[^\x00-\x7f]',r'', s)
+        return s
+
+#############
 # Main Loop
 #############
 
@@ -90,9 +118,9 @@ tss2 = 0.0
 print ('Analyzing tweet sentiment...')
 
 if PRINT_OUT:
-    print('--------------------------------------------------------------------------------------------------------------')
-    print ('TextBlob | NLTK |                          Tweet text                     | Sentences | Words  | Unique Words')
-    print('--------------------------------------------------------------------------------------------------------------')
+    print('--------------------------------------------------------------------------------------------------------------------------------')
+    print ('TextBlob | NLTK  |                                    Tweet text                            | Sentences | Words  | Unique Words')
+    print('--------------------------------------------------------------------------------------------------------------------------------')
 
 for tweet in tweets:
     # get text from tweet
@@ -104,6 +132,12 @@ for tweet in tweets:
     line = line.strip()
     # Remove links
     line = remove_links(line)
+
+    # Eliminate new lines
+    line = line.replace('\n', ' ')
+
+    # Remove non-ascii characters
+    line = NormalizeText.remove_nonascii(line)
 
     # Tokenize text
     tweet_sent = sent_tokenize(line)   # Tokenize sentences
@@ -124,7 +158,7 @@ for tweet in tweets:
 
     # Display results
     if PRINT_OUT:
-        print ('{:8.2f} | {:4.2f} | {:55.55} | {:9d} | {:6d} | {:12d}'.format(
+        print ('{:8.2f} | {:5.2f} | {:72.72} | {:9d} | {:6d} | {:12d}'.format(
                            ss1.sentiment.polarity, 
                            ss2['compound'],
                            line,
