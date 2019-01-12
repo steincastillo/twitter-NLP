@@ -93,21 +93,11 @@ def load_badwords(lang):
         bad_words = nltk.word_tokenize(bad_words)
     return bad_words
 
-def remove_links(text):
-    urls = re.finditer('http\S+', text)
-    for i in urls:
-        try:
-            text = re.sub(i.group().strip(), '', text)
-        except:
-            pass      
-    return (text)
-
 #############
 # Constants
 #############
 # These constants control the behavior the this routine. Change them accordingly.
 PRINT_OUT = False       # True if tweets should be display when processed
-PUNCTUATION = [',', '.', '"', '“', '”', '!', '¡', '?', '¿', ':', '...', ';', "'", "’", '…']  # Punctuation symbols to eliminate
 CLOUD_WORDS = 50        # Number of words to draw in the word cloud
 READ_SPEED = 3      # 3 words per second
 
@@ -123,6 +113,15 @@ class NormalizeText():
             s = s.replace(char, SPECIAL_CHARS[char])
         return s
 
+    def remove_punctuation(s):
+        # Remove punctuation marks
+        # Punctuation symbols to eliminate
+        PUNCTUATION = [',', '.', '"', '“', '”', '!', '¡', '?', '¿', ':', 
+                       '...', ';', "'", "’", '…']  
+        for item in PUNCTUATION:
+            s = s.replace(item, '')
+        return s
+
     def to_lowercase(s):
         # Convert text to lowercase
         s = s.casefold()
@@ -136,8 +135,18 @@ class NormalizeText():
         return s
 
     def remove_nonascii(s):
+        # Remove non-ascii characters
         s = re.sub(r'[^\x00-\x7f]',r'', s)
         return s
+
+    def remove_links(s):
+        urls = re.finditer('http\S+', s)
+        for i in urls:
+            try:
+                s = re.sub(i.group().strip(), '', s)
+            except:
+                pass      
+        return (s)
 
 ################
 # Main Loop
@@ -196,7 +205,7 @@ for tweet in tweets:
     # Remove leading and trailing spaces
     line = line.strip()
     # Remove links
-    line = remove_links(line)
+    line = NormalizeText.remove_links(line)
     # print (line)
     # Add line to text body
     text = text + line + '\n'
@@ -213,8 +222,7 @@ text_raw = text
 
 # Eliminate the punctuation signs
 print ('Eliminating punctuation signs...')
-for item in PUNCTUATION:
-    text = text.replace(item, '')
+text = NormalizeText.remove_punctuation(text)
 # Eliminate new lines
 print ('Eliminating new lines characters...')
 text = text.replace('\n', ' ')
