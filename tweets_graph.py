@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 tweets_sentiment.py
-Created on Thu Nov 22 20:45:46 2018
+Created on Thu Jan 13 21:33:47 2019
 Version: 1.5
 Author: Stein Castillo
 Copyright 2018 Stein Castillo <stein_castillo@yahoo.com>
@@ -24,7 +24,7 @@ The following libraries must be installed:
 
 USAGE:
 *************
-python tweets_scatter_v2.py --file <tweets_file>
+python tweets_graph.py --file <tweets_file>
 """
 
 #############
@@ -74,70 +74,64 @@ if 'sentiment' not in tweets:
 # Graph sentiment - scatter chart
 
 # Extract sentiment values
+print ('Extracting tweet sentiment values..')
 t_sentiment = tweets['sentiment'].apply(pd.Series)
 total_records = len(tweets)-1
+
+# Extract tweeting frequency
+print ('Calculating tweeting frequency...')
+t_dates = tweets['created_at'].apply(pd.Series)
+t_dates = t_dates.rename(columns={0:'date'})
+
+# Extract dates and count frequency
+d1 = []
+for index, d in t_dates.iterrows():
+    d1.append(d['date'].date())
+    
+t1 = pd.DataFrame({'date':d1})
+f1=t1['date'].value_counts()
+
+
+# Create chart
 print ('Creating chart...')
 style.use('ggplot')
 
 # Initialize figure
-fig = plt.figure()
-ax1 = fig.add_subplot(211)
-ax2 = fig.add_subplot(212)
+fig, axes = plt.subplots(nrows=2, ncols=1)
 
-# Textblob Chart
-ax1.scatter(t_sentiment.index, t_sentiment['textblob'],
-            alpha=0.8, c='blue', edgecolors='none',
-            s=30, label='Textblob', marker='H')
+# Tweet frequency chart
+f1.plot(ax=axes[0])
+axes[0].set_title('Tweet frequency')
+axes[0].set_ylabel('# of tweets')
 
-# Calculate trend line - Textblob
-z1 = np.polyfit(t_sentiment.index, t_sentiment['textblob'], 1)
-p1 = np.poly1d(z1)
-ax1.plot(t_sentiment.index, p1(t_sentiment.index), '-.', color = 'blue')
-
-# Add positive sentiment patch
-ax1.add_patch(
-        patches.Rectangle(
-                (0,0),  # (x, y)
-                total_records,  # Width
-                1,  # height
-                alpha = 0.3, facecolor='green'))
-# Add negative sentiment patch
-ax1.add_patch(
-        patches.Rectangle(
-                (0,0),  # (x, y)
-                total_records,  # Width
-                -1,  # height
-                alpha = 0.3, facecolor='red'))
-ax1.legend(loc=2)
-
-# NLTK chart
-ax2.scatter(t_sentiment.index, t_sentiment['nltk'],
+# NLTK Chart
+axes[1].scatter(t_sentiment.index, t_sentiment['nltk'],
              alpha=0.8, c='magenta', edgecolors='none',
              s=30, label='NLTK', marker='H')
 
 # Calculate trend line - NLTK
 z2 = np.polyfit(t_sentiment.index, t_sentiment['nltk'], 1)
 p2 = np.poly1d(z2)
-ax2.plot(t_sentiment.index, p2(t_sentiment.index), '-.', color = 'magenta')
+axes[1].plot(t_sentiment.index, p2(t_sentiment.index), '-.', color = 'magenta')
 
 # Add positive sentiment patch
-ax2.add_patch(
+axes[1].add_patch(
         patches.Rectangle(
                 (0,0),  # (x, y)
                 total_records,  # Width
                 1,  # height
                 alpha = 0.3, facecolor='green'))
 # Add negative sentiment patch
-ax2.add_patch(
+axes[1].add_patch(
         patches.Rectangle(
                 (0,0),  # (x, y)
                 total_records,  # Width
                 -1,  # height
                 alpha = 0.3, facecolor='red'))
-ax2.legend(loc=2)
+axes[1].legend(loc=2)
 
 # Add title
-plt.suptitle('Sentiment Analysis-'+tweet_file)
+axes[1].set_title('Sentiment Analysis-'+tweet_file)
 
 # Show the chart
 plt.show()

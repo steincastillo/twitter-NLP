@@ -36,7 +36,7 @@ The following libraries must be installed:
 
 USAGE: 
 ***********
-python tweets_listener.py --track <keyword> --lang <en|es>
+python tweets_listener.py --track <keyword> --count <tweets> --lang <en|es>
 """
 
 #############

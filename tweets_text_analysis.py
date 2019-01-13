@@ -117,7 +117,7 @@ class NormalizeText():
         # Remove punctuation marks
         # Punctuation symbols to eliminate
         PUNCTUATION = [',', '.', '"', '“', '”', '!', '¡', '?', '¿', ':', 
-                       '...', ';', "'", "’", '…']  
+                       '...', ';', "'", "’", '…', '(', ')', '*', '-', '~']
         for item in PUNCTUATION:
             s = s.replace(item, '')
         return s
