@@ -16,9 +16,7 @@ The results will include:
 - Number of profanity words
 - Estimated text reading time
 - Most common words 
-- Sentiment analysis
-- Sentiment analysis scatter plot
-- Word cloud chart
+- Sentiment analysis 
 
 ## What do you need?
 **Libraries:**  
