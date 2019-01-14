@@ -6,6 +6,9 @@ NLP for twitter is a collection of routines that will allow the user to download
 and run NLP (Natural Language Processing) analysis.
 
 The results will include:
+- Wordcloud chart
+- Sentiment scatter chart
+- Tweet frequency chart
 - Word count
 - Sentence count
 - Vocabulary richnness
@@ -66,5 +69,5 @@ note: the number of tweets to listen to is controlled by a coded constant. Adjus
 Feel free to add an issue to the repo or contact me at: contact@steincastillo.com 
 
 ## Profanity warning
-Please be advise that this repository contains files with a list of profanity words used in english (US) and spanish (MX).
+Please be advised that this repository contains files with a list of profanity words used in english (EN) and spanish (ES).
 The only purpose of these files is to conduct NLP research and analisys on texts and should be treated as such.
