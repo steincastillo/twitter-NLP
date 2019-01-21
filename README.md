@@ -57,7 +57,7 @@ _To perform text analysis on tweets:_
 `python tweets_text_analysis.py --file <tweets_file.json> --lang <en|es>`  
   
 _To plot sentiment scatter chart:_  
-`python tweets_scatter.py --file <tweets_file.json>`  
+`python tweets_scatter_v2.py --file <tweets_file.json>`  
 
 _To plot tweet sentiment and tweeting frequency:_  
 `python tweets_graph.py --file <tweets_file.json>`  
