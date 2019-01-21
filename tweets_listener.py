@@ -28,11 +28,7 @@ access_token = 'your access token'
 access_token_secret = 'your token secret'
 
 The following libraries must be installed:
-- NLTK
-- Textblob
-- WordCloud
-- Matplotlib
-- Pandas
+- Twython
 
 USAGE: 
 ***********
@@ -44,7 +40,6 @@ python tweets_listener.py --track <keyword> --count <tweets> --lang <en|es>
 #############
 from twython import Twython
 from twython import TwythonStreamer
-from textblob import TextBlob
 import argparse
 import warnings
 import re
@@ -176,4 +171,5 @@ if __name__ == "__main__":
     stream.statuses.filter(track=tweet_track,
                         language=[tweet_lang], tweet_mode='extended')
 
+    print ('Process complete!')
 

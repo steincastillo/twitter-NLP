@@ -21,11 +21,16 @@ the twitter API.
 
 Requisites:
 ***********
+Create a file named: auth.py
+
+add the following lines:
+consumer_key = 'your consumer key'
+consumer_secret = 'your consumer secret'
+access_token = 'your access token'
+access_token_secret = 'your token secret'
+
 The following libraries must be installed:
-- NLTK
-- WordCloud
-- Matplotlib
-- Pandas
+- twython
 
 USAGE: 
 ***********

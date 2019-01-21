@@ -59,6 +59,9 @@ _To perform text analysis on tweets:_
 _To plot sentiment scatter chart:_  
 `python tweets_scatter.py --file <tweets_file.json>`  
 
+_To plot tweet sentiment and tweeting frequency:_  
+`python tweets_graph.py --file <tweets_file.json>`  
+
 _To listen to tweets:_  
 `python tweets_listener.py --track <keyword> [--lang [en|es]]`  
 note: the number of tweets to listen to is controlled by a coded constant. Adjust this value to your needs  
