@@ -8,15 +8,16 @@ Copyright 2018 Stein Castillo <stein_castillo@yahoo.com>
 
 Summary:
 ************
-This routine will plot (scatter) the sentinment analysis of a set of tweets.
-
-Note that the maximum tweet count to download is 200 as this is limited by
-the twitter API.
+This routine will plot (scatter) the sentinment analysis of a set of tweets
+and the user tweeting frequency (line).
 
 Requisites:
 ***********
 The input file MUST be produced with the routine tweets_get.py that is
 part of this libary as the file format is very important.
+
+Prior to graphing the results the tweets_sentiment.py must be executed
+on the file to calculate the tweets sentiment.
 
 The following libraries must be installed:
 - Matplotlib
@@ -24,7 +25,7 @@ The following libraries must be installed:
 
 USAGE:
 *************
-python tweets_graph.py --file <tweets_file>
+python tweets_graph.py --file <tweets_file.json>
 """
 
 #############
@@ -34,12 +35,10 @@ import pandas as pd
 import numpy as np
 import argparse
 import warnings
-import sys
 from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib import style
-from textblob import TextBlob
 
 #############
 # Main Loop
@@ -48,7 +47,7 @@ from textblob import TextBlob
 #construct the command line argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument('-f', '--file', required=True,
-    help='usage: python tweets_scatter.py --file <file>')
+    help='usage: python tweets_graph.py --file <file>')
 args = vars(ap.parse_args())
 warnings.filterwarnings("ignore")
 
@@ -70,8 +69,6 @@ tweets = pd.read_json(tweet_file)
 if 'sentiment' not in tweets:
     print ('[Error] Execute sentiment analysis first...')
     exit()
-       
-# Graph sentiment - scatter chart
 
 # Extract sentiment values
 print ('Extracting tweet sentiment values..')
@@ -91,7 +88,6 @@ for index, d in t_dates.iterrows():
 t1 = pd.DataFrame({'date':d1})
 f1=t1['date'].value_counts()
 
-
 # Create chart
 print ('Creating chart...')
 style.use('ggplot')
@@ -101,13 +97,16 @@ fig, axes = plt.subplots(nrows=2, ncols=1)
 
 # Tweet frequency chart
 f1.plot(ax=axes[0])
-axes[0].set_title('Tweet frequency')
+axes[0].set_title('Tweet frequency-'+tweet_file)
 axes[0].set_ylabel('# of tweets')
 
-# NLTK Chart
+# NLTK sentiment chart
 axes[1].scatter(t_sentiment.index, t_sentiment['nltk'],
              alpha=0.8, c='magenta', edgecolors='none',
              s=30, label='NLTK', marker='H')
+
+axes[1].set_ylabel('Sentiment')
+axes[1].set_title('Sentiment Analysis')
 
 # Calculate trend line - NLTK
 z2 = np.polyfit(t_sentiment.index, t_sentiment['nltk'], 1)
@@ -129,9 +128,6 @@ axes[1].add_patch(
                 -1,  # height
                 alpha = 0.3, facecolor='red'))
 axes[1].legend(loc=2)
-
-# Add title
-axes[1].set_title('Sentiment Analysis-'+tweet_file)
 
 # Show the chart
 plt.show()
