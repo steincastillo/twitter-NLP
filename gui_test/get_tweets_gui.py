@@ -22,6 +22,7 @@ from auth import (
     access_token,
     access_token_secret)
 
+# Define UI
 qtCreatorFile = "get_tweets.ui"
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
@@ -35,9 +36,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bClose.clicked.connect(self.closeEvent)
 
     def closeEvent(self):
+        # Close the application
         app.quit()
        
     def fetchtweets(self):
+        # Get user tweets
+        
         # Extract parameters
         tUser = self.user.text().lower()
         tCount = int(self.tweetCount.value())
