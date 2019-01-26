@@ -38,6 +38,10 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         tUser = self.user.text().lower()
         tCount = int(self.tweetCount.value())
 
+        # Clear text windows
+        self.statusDisplay.clear()
+        self.tweetDisplay.clear()
+
         # Validate twitter user
         if self.user.text() == '':
             self.statusDisplay.append('[ERROR] User name cannot be blank!')
@@ -54,6 +58,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             tCount = user_details[0]['statuses_count']
         
         self.statusDisplay.append('Downloading '+ str(tCount) + ' tweets of ' + user_details[0]['name'])
+
+        # Display user details
+        self.disId.setText(str(user_details[0]['id']))
+        self.disName.setText(user_details[0]['name'])
+        self.disCount.setText(str(user_details[0]['statuses_count']))
+        self.disFollow.setText(str(user_details[0]['followers_count']))
 
         # Get user timeline
         try:
