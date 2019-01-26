@@ -32,6 +32,10 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         
         self.getTweets.clicked.connect(self.fetchtweets)
+        self.bClose.clicked.connect(self.closeEvent)
+
+    def closeEvent(self):
+        app.quit()
        
     def fetchtweets(self):
         # Extract parameters
@@ -44,20 +48,20 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         # Validate twitter user
         if self.user.text() == '':
-            self.statusDisplay.append('[ERROR] User name cannot be blank!')
+            self.statusDisplay.append('<font style="color:Red;">[ERROR] User name cannot be blank!</font>')
             return()
         try:
             user_details = twitter.lookup_user(screen_name=self.user.text())
         except:
-            self.statusDisplay.append('[ERROR] User name not found in twitter!')
+            self.statusDisplay.append('<font style="color:Red;">[ERROR] User name not found in twitter!</font>')
             return()
 
         # Validate user has enough tweets
         if user_details[0]['statuses_count'] < tCount:
-            self.statusDisplay.append('[WARNING] User does not have enough tweets, Adjusting...')
+            self.statusDisplay.append('<font style="color:Orange;">[WARNING] User does not have enough tweets, Adjusting...</font>')
             tCount = user_details[0]['statuses_count']
         
-        self.statusDisplay.append('Downloading '+ str(tCount) + ' tweets of ' + user_details[0]['name'])
+        self.statusDisplay.append('<font style="color:Green;">[MSG] Downloading '+ str(tCount) + ' tweets of ' + user_details[0]['name']+'</font>')
 
         # Display user details
         self.disId.setText(str(user_details[0]['id']))
@@ -70,9 +74,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             user_timeline = twitter.get_user_timeline(screen_name = tUser,
                                                 count = tCount,
                                                 tweet_mode = 'extended')
-            self.statusDisplay.append('Tweets succesfully retrieved!')
+            self.statusDisplay.append('<font style="color:Green;">[MSG] Tweets succesfully retrieved!</font>')
         except:
-            self.statusDisplay.append('Tweets could not be retrived!')
+            self.statusDisplay.append('<font style="color:Green;">[ERROR] Tweets could not be retrived!</font>')
             return()
         
         # Display retrieved tweets
@@ -83,13 +87,13 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.tweetDisplay.append(line)
 
         # Save tweets to JSON file
-        self.statusDisplay.append('Creating JSON file...')
+        self.statusDisplay.append('<font style="color:Green;">[MSG] Creating JSON file.</font>')
         filename = tUser+'.json'
 
         with open(filename, 'w', encoding='utf-8') as file:
             json.dump(user_timeline, file, sort_keys = True, indent= 4)
         
-        line = 'File {} created. Process complete!'.format(filename)
+        line = '<font style="color:Green;">[MSG] File {} created. Process complete!</font>'.format(filename)
         self.statusDisplay.append(line)
       
 if __name__ == "__main__":
