@@ -14,7 +14,6 @@ import argparse
 import warnings
 import json
 import re
-from pathlib import Path
 from textblob import TextBlob
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import sent_tokenize, word_tokenize, TweetTokenizer
@@ -107,6 +106,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         tss2 = 0.0
         tLine = 0
 
+        # Initialize table
+        self.tTweets.setRowCount(0)
+
         # Configure table
         # Disable table editing
         self.tTweets.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
@@ -118,7 +120,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tTweets.setColumnWidth(4, 65)      # Words
         self.tTweets.setColumnWidth(5, 85)      # Unique words
 
-        # Analyse tweet sentiment
+        # Analyze tweet sentiment
         for tweet in tweets:
             # get text from tweet
             if tweet['truncated']:
@@ -157,11 +159,23 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
            
             # Display results
             self.tTweets.insertRow(tLine)
+
             value = '{:.2f}'.format(ss1.sentiment.polarity)
             self.tTweets.setItem(tLine,0, QtWidgets.QTableWidgetItem(value))    # Textblob
+            # Set cell color
+            if ss1.sentiment.polarity > 0:
+                self.tTweets.item(tLine, 0).setBackground(QtCore.Qt.green)
+            elif ss1.sentiment.polarity < 0:
+                self.tTweets.item(tLine, 0).setBackground(QtCore.Qt.red)
+            
             value = '{:.2f}'.format(ss2['compound'])
             self.tTweets.setItem(tLine,1, QtWidgets.QTableWidgetItem(value))    # NLTK
-            value = '{:80.80}'.format(line)
+            if ss2['compound'] > 0:
+                self.tTweets.item(tLine, 1).setBackground(QtCore.Qt.green)
+            elif ss2['compound'] < 0:
+                self.tTweets.item(tLine, 1).setBackground(QtCore.Qt.red)
+
+            value = '{:120.120}'.format(line)
             self.tTweets.setItem(tLine,2, QtWidgets.QTableWidgetItem(value))    # Tweet text
             value = '{:6d}'.format(len(tweet_sent))
             self.tTweets.setItem(tLine,3, QtWidgets.QTableWidgetItem(value))    # Sentences
@@ -171,6 +185,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             self.tTweets.setItem(tLine,5, QtWidgets.QTableWidgetItem(value))    # Unique Words
             tLine += 1
 
+        # Display sentiment averages
         value = '{:.2f}'.format(tss1/len(tweets))
         self.tblobAvg.setText(value)
         value = '{:.2f}'.format(tss2/len(tweets))
@@ -181,7 +196,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 #############
 
 if __name__ == "__main__":
-    
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
     window.show()
