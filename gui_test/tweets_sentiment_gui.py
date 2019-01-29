@@ -59,10 +59,22 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.bSelectFile.clicked.connect(self.openFilenameDialog)
         self.bAnalyse.clicked.connect(self.tweetAnalyse)
         self.bClose.clicked.connect(self.closeEvent)
+        self.tTweets.doubleClicked.connect(self.tDetails)
         
     def closeEvent(self):
         # Close the application
         app.quit()
+
+    def tDetails(self):
+        # Table double click, show the tweet text details
+        # Get the location of the double click
+        for idx in self.tTweets.selectionModel().selectedIndexes():
+            row_number = idx.row()
+            column_number = idx.column()
+        # Get the text details
+        item = self.tTweets.item(row_number, column_number)
+        # Create a pop up window with the details
+        QtWidgets.QMessageBox.about(self, 'Tweet', item.text())
 
     def read_json(self, json_file):
         with open(json_file) as file:
@@ -93,6 +105,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # Read the tweets file
         if self.fileName == '':
             return
+        self.lStatusline.setText('Reading JSON file...')
         tweets = self.read_json(self.fileName)
 
         # Initalize tweeter tokenizer
@@ -121,6 +134,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tTweets.setColumnWidth(5, 85)      # Unique words
 
         # Analyze tweet sentiment
+        self.lStatusline.setText('Analyzing tweet sentiment...')
         for tweet in tweets:
             # get text from tweet
             if tweet['truncated']:
@@ -134,12 +148,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             line = line.strip()
             # Remove links
             line = self.remove_links(line)
-
             # Eliminate new lines
             line = line.replace('\n', ' ')
-
             # Remove non-ascii characters
             line = NormalizeText.remove_nonascii(line)
+            # Remove special characters
+            line = NormalizeText.remove_special(line)
 
             # Tokenize text
             tweet_sent = sent_tokenize(line)   # Tokenize sentences
@@ -158,7 +172,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             tweet.update({'sentiment':{'textblob':ss1.sentiment.polarity, 'nltk':ss2['compound']}})
            
             # Display results
-            self.tTweets.insertRow(tLine)
+            self.tTweets.insertRow(tLine)       # Insert a row in the table
 
             value = '{:.2f}'.format(ss1.sentiment.polarity)
             self.tTweets.setItem(tLine,0, QtWidgets.QTableWidgetItem(value))    # Textblob
@@ -169,13 +183,14 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 self.tTweets.item(tLine, 0).setBackground(QtCore.Qt.red)
             
             value = '{:.2f}'.format(ss2['compound'])
+            # Set cell color
             self.tTweets.setItem(tLine,1, QtWidgets.QTableWidgetItem(value))    # NLTK
             if ss2['compound'] > 0:
                 self.tTweets.item(tLine, 1).setBackground(QtCore.Qt.green)
             elif ss2['compound'] < 0:
                 self.tTweets.item(tLine, 1).setBackground(QtCore.Qt.red)
 
-            value = '{:120.120}'.format(line)
+            value = '{:200.200}'.format(line)
             self.tTweets.setItem(tLine,2, QtWidgets.QTableWidgetItem(value))    # Tweet text
             value = '{:6d}'.format(len(tweet_sent))
             self.tTweets.setItem(tLine,3, QtWidgets.QTableWidgetItem(value))    # Sentences
@@ -190,6 +205,12 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tblobAvg.setText(value)
         value = '{:.2f}'.format(tss2/len(tweets))
         self.nltkAvg.setText(value)
+
+        # Update JSON file
+        self.lStatusline.setText('Updating JSON file...')
+        with open(self.fileName, 'w', encoding='utf-8') as file:
+            json.dump(tweets, file, sort_keys=True, indent=4)
+        file.close()
 
 #############
 # Main Loop

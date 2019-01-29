@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1000</width>
-    <height>600</height>
+    <width>996</width>
+    <height>622</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -75,6 +75,12 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <weight>50</weight>
+      <bold>false</bold>
+     </font>
+    </property>
    </widget>
    <widget class="QPushButton" name="bAnalyse">
     <property name="geometry">
@@ -104,8 +110,8 @@
      <rect>
       <x>10</x>
       <y>120</y>
-      <width>721</width>
-      <height>331</height>
+      <width>741</width>
+      <height>431</height>
      </rect>
     </property>
     <property name="verticalScrollBarPolicy">
@@ -243,13 +249,26 @@
      </font>
     </property>
    </widget>
+   <widget class="QLineEdit" name="lStatusline">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>562</y>
+      <width>721</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1000</width>
+     <width>996</width>
      <height>21</height>
     </rect>
    </property>
