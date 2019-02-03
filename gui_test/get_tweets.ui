@@ -52,6 +52,11 @@
       <height>231</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
    </widget>
    <widget class="QTextBrowser" name="statusDisplay">
     <property name="geometry">
@@ -192,7 +197,7 @@
      <string>&amp;Close</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>30</x>

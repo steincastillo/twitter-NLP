@@ -55,6 +55,10 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.fileName = ''
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
+
+        # Add status bar
+        self.statusBar = QtWidgets.QStatusBar()
+        self.setStatusBar(self.statusBar)
         
         self.bSelectFile.clicked.connect(self.openFilenameDialog)
         self.bAnalyse.clicked.connect(self.tweetAnalyse)
@@ -72,9 +76,17 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             row_number = idx.row()
             column_number = idx.column()
         # Get the text details
-        item = self.tTweets.item(row_number, column_number)
+        item = self.tTweets.item(row_number, 2)
         # Create a pop up window with the details
-        QtWidgets.QMessageBox.about(self, 'Tweet', item.text())
+        # Version 1 (long but more control)
+            # self.msg = QtWidgets.QMessageBox()
+            # self.msg.setIcon(QtWidgets.QMessageBox.Information)
+            # self.msg.setText('Tweet details')
+            # self.msg.setInformativeText(item.text())
+            # self.msg.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            # _ = self.msg.exec_()
+        # Version 2 (Short, less control over the interface)
+        QtWidgets.QMessageBox.about(self, 'Tweet details', item.text())
 
     def read_json(self, json_file):
         with open(json_file) as file:
@@ -105,7 +117,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         # Read the tweets file
         if self.fileName == '':
             return
-        self.lStatusline.setText('Reading JSON file...')
+        self.statusBar.showMessage('Reading JSON file...', 1000)
         tweets = self.read_json(self.fileName)
 
         # Initalize tweeter tokenizer
@@ -134,7 +146,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.tTweets.setColumnWidth(5, 85)      # Unique words
 
         # Analyze tweet sentiment
-        self.lStatusline.setText('Analyzing tweet sentiment...')
+        self.statusBar.showMessage('Analyzing tweet sentiment...', 1000)
         for tweet in tweets:
             # get text from tweet
             if tweet['truncated']:
@@ -207,7 +219,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.nltkAvg.setText(value)
 
         # Update JSON file
-        self.lStatusline.setText('Updating JSON file...')
+        self.statusBar.showMessage('Updating JSON file...', 1000)
         with open(self.fileName, 'w', encoding='utf-8') as file:
             json.dump(tweets, file, sort_keys=True, indent=4)
         file.close()

@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
+ <author>Stein Castillo</author>
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>996</width>
-    <height>622</height>
+    <width>963</width>
+    <height>633</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Sentiment Analysis</string>
+   <string>Tweets Sentiment Analysis</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QLabel" name="label">
@@ -37,136 +41,23 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="bSelectFile">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>60</y>
-      <width>75</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&amp;Select file...</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="bClose">
     <property name="geometry">
      <rect>
-      <x>860</x>
-      <y>520</y>
+      <x>840</x>
+      <y>530</y>
       <width>75</width>
-      <height>23</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string>&amp;Close</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lFileName">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>130</x>
-      <y>62</y>
-      <width>381</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="bAnalyse">
-    <property name="geometry">
-     <rect>
-      <x>540</x>
-      <y>46</y>
-      <width>121</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>&amp;Analyse</string>
-    </property>
-   </widget>
-   <widget class="QTableWidget" name="tTweets">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>120</y>
-      <width>741</width>
-      <height>431</height>
-     </rect>
-    </property>
-    <property name="verticalScrollBarPolicy">
-     <enum>Qt::ScrollBarAsNeeded</enum>
-    </property>
-    <property name="showGrid">
-     <bool>true</bool>
-    </property>
-    <property name="gridStyle">
-     <enum>Qt::SolidLine</enum>
-    </property>
-    <property name="rowCount">
-     <number>0</number>
-    </property>
-    <property name="columnCount">
-     <number>6</number>
-    </property>
-    <attribute name="verticalHeaderDefaultSectionSize">
-     <number>24</number>
-    </attribute>
-    <column>
-     <property name="text">
-      <string>Textblob</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>NLTK</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Tweet Text</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Sentences</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Words</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>Unique Words</string>
-     </property>
-    </column>
-   </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>795</x>
+      <x>798</x>
       <y>160</y>
       <width>151</width>
       <height>20</height>
@@ -185,6 +76,9 @@
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
+    <property name="buddy">
+     <cstring>tblobAvg</cstring>
+    </property>
    </widget>
    <widget class="QLineEdit" name="tblobAvg">
     <property name="enabled">
@@ -192,7 +86,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>810</x>
+      <x>813</x>
       <y>190</y>
       <width>121</width>
       <height>31</height>
@@ -209,7 +103,7 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>810</x>
+      <x>813</x>
       <y>300</y>
       <width>121</width>
       <height>16</height>
@@ -228,6 +122,9 @@
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
+    <property name="buddy">
+     <cstring>nltkAvg</cstring>
+    </property>
    </widget>
    <widget class="QLineEdit" name="nltkAvg">
     <property name="enabled">
@@ -235,7 +132,7 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>812</x>
+      <x>813</x>
       <y>323</y>
       <width>121</width>
       <height>31</height>
@@ -249,18 +146,110 @@
      </font>
     </property>
    </widget>
-   <widget class="QLineEdit" name="lStatusline">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>562</y>
-      <width>721</width>
-      <height>20</height>
+      <y>46</y>
+      <width>751</width>
+      <height>531</height>
      </rect>
     </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QPushButton" name="bSelectFile">
+         <property name="text">
+          <string>&amp;Select file...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lFileName">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="bAnalyse">
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>&amp;Analyse</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTableWidget" name="tTweets">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="showGrid">
+        <bool>true</bool>
+       </property>
+       <property name="gridStyle">
+        <enum>Qt::SolidLine</enum>
+       </property>
+       <property name="rowCount">
+        <number>0</number>
+       </property>
+       <property name="columnCount">
+        <number>6</number>
+       </property>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>24</number>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Textblob</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>NLTK</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Tweet Text</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Sentences</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Words</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Unique Words</string>
+        </property>
+       </column>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -268,7 +257,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>996</width>
+     <width>963</width>
      <height>21</height>
     </rect>
    </property>

@@ -31,6 +31,11 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
+
+        # Add status bar
+        self.statusBar = QtWidgets.QStatusBar()
+        self.setStatusBar(self.statusBar)
+        
         
         self.getTweets.clicked.connect(self.fetchtweets)
         self.bClose.clicked.connect(self.closeEvent)
@@ -74,6 +79,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.disFollow.setText(str(user_details[0]['followers_count']))
 
         # Get user timeline
+        self.statusBar.showMessage('Retrieving user tweets...', 1000)
         try:
             user_timeline = twitter.get_user_timeline(screen_name = tUser,
                                                 count = tCount,
@@ -84,6 +90,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             return()
         
         # Display retrieved tweets
+        self.statusBar.showMessage('Displaying user tweets...', 1000)
         for tweet in user_timeline:
             line = '...{} | {}... '.format(
                 tweet['id_str'][-4:],
