@@ -103,13 +103,16 @@ class Window(QtWidgets.QDialog):
         # Bottom Layout
         self.tAnalysis = QtWidgets.QTextBrowser()
         self.tDetails = QtWidgets.QTextBrowser()
+        # Set textbrowser properties
+        self.tAnalysis.setFontPointSize(10)
+        self.tDetails.setFontPointSize(10)
 
         bottomLayout = QtWidgets.QHBoxLayout()
         bottomLayout.addWidget(self.tAnalysis)
         bottomLayout.addWidget(self.tDetails)
 
 
-        # Just some button connected to `plot` method
+        # Connect buttons to methods
         # self.button = QtWidgets.QPushButton('Plot')
         # self.button.clicked.connect(self.plot)
         self.bSelectFile.clicked.connect(self.openFilenameDialog)
@@ -126,7 +129,6 @@ class Window(QtWidgets.QDialog):
 
         layout.addLayout(bottomLayout)
 
-        
         self.setLayout(layout)
 
     def plot(self):
@@ -145,6 +147,13 @@ class Window(QtWidgets.QDialog):
 
         # refresh canvas
         self.canvas.draw()
+
+    def pList(self, list):
+        # Print a formated list of tuples
+        self.items = list
+        for item in self.items:
+            line = '{} {:^2} {}'.format(item[0], '->', item[1])
+            self.tDetails.append(line)
     
     def openFilenameDialog(self):
         options = QtWidgets.QFileDialog.Options()
@@ -201,18 +210,14 @@ class Window(QtWidgets.QDialog):
         # Define stopwords dictionary
         # Read language combox selection
         lang = str(self.cLang.currentText()).lower()
-        print (lang)
         if lang == 'spanish':
             stop_words = set(stopwords.words('spanish'))
             bad_words = self.load_badwords('es')
-            print ('Using SPANISH stopwords/profanity dictionary')
         else:
             stop_words = set(stopwords.words('english'))
             bad_words = self.load_badwords('en')
-            print ('Using ENGLISH stopwords/profanity dictionary')
 
         # Extract and pre-process tweets text
-        # self.lStatusline.setText('Extracting text from tweets...')
         text = ''
         for tweet in tweets:
             if tweet['truncated']:
@@ -229,39 +234,30 @@ class Window(QtWidgets.QDialog):
             # Add line to text body
             text = text + line + '\n'
 
-        # self.lStatusline.setText('Pre-processing file...')
         # Remove non-ascii characters
-        # self.lStatusline.setText('Removing non-ascii characters...')
         text = NormalizeText.remove_nonascii(text)
         # Replace accent and special character
-        # self.lStatusline.setText('Replacing special characters...')
         text = NormalizeText.remove_special(text)
 
         # Create a copy of the text
         text_raw = text
 
         # Eliminate the punctuation signs
-        # self.lStatusline.setText('Eliminating punctuation signs...')
         text = NormalizeText.remove_punctuation(text)
         # Eliminate new lines
-        # self.lStatusline.setText('Eliminating new lines characters...')
         text = text.replace('\n', ' ')
         # Eliminate 'RT' flags
-        # self.lStatusline.setText('Eliminating RT flags...')
         text = NormalizeText.remove_flags(text)
         # Converting to lowercase
-        # self.lStatusline.setText('Converting to lowercase...')
         text = NormalizeText.to_lowercase(text)
 
         # Tokenize words 
-        # self.lStatusline.setText('Tokenizing tweets...')
         tTokenizer = TweetTokenizer()
         tTokens = tTokenizer.tokenize(text)
         # Tokenize sentences
         sentence_tokens = nltk.sent_tokenize(text_raw)
 
         # Extract @ and hashtags
-        # self.lStatusline.setText('Analysing hashtags...')
         tHash = []
         tAt = []
         for item in tTokens:
@@ -283,7 +279,6 @@ class Window(QtWidgets.QDialog):
         used_bad_words = [word for word in tTokens if word.lower() in bad_words]
 
         # Calculate frequency distribution
-        # self.lStatusline.setText('Calculating frequency distribution...')
         fdist = nltk.FreqDist(tTokens)
         fdist1 = nltk.FreqDist(text_nonstop)
         fdist2 = nltk.FreqDist(text_no_badwords)
@@ -304,35 +299,62 @@ class Window(QtWidgets.QDialog):
 
         # Display text file analysis results
         
-        #line = 'Sentences                   : {}'.format(len(sentence_tokens))
         line = '{} {}'.format('Sentences:'.ljust(25, ' '), len(sentence_tokens))
         self.tAnalysis.append(line)
-        # line = 'Total words                 : {}'.format(len(tTokens))
+
         line = '{} {}'.format('Total words:'.ljust(25, ' '), len(tTokens))
         self.tAnalysis.append(line)
-        # line = 'Unique words                : {}'.format(len(text_vocab))
+
         line = '{} {}'.format('Unique words:'.ljust(25, ' '), len(text_vocab))
         self.tAnalysis.append(line)
-        # line = 'Vocabulary richness         : {:.2f}%'.format(len(text_vocab)/len(tTokens)*100)
+
         line = '{} {:.2f}'.format('Vocabulary richness:'.ljust(25, ' '), len(text_vocab)/len(tTokens)*100)
         self.tAnalysis.append(line)
-        #line = 'Unique stopwords            : {}'.format(len(fdist_stopwords))
+
         line = '{} {}'.format('Unique stopwords:'.ljust(25, ' '), len(fdist_stopwords))
         self.tAnalysis.append(line)
-        #line = 'Unique profanity words      : {}'.format(len(fdist_badwords))
+
         line = '{} {:.0f}'.format('Unique profanity words:'.ljust(25, ' '), len(fdist_badwords))
         self.tAnalysis.append(line)
-        #line = 'Total profanity words       : {}'.format(len(used_bad_words))
+
         line = '{} {:.0f}'.format('Total profanity words:'.ljust(25, ' '), len(used_bad_words))
         self.tAnalysis.append(line)
-        #line = 'Adjusted vocabulary richness: {:.2f}'.format(adj_vocab_rich)
+
         line = '{} {:.2f}'.format('Adj. vocabulary richness:'.ljust(25, ' '), adj_vocab_rich)
         self.tAnalysis.append(line)
-        #line = 'Reading time                : {:.1f} min.'.format(read_time)
+
         line = '{} {:.1f}'.format('Reading time:'.ljust(25, ' '), read_time)
         self.tAnalysis.append(line)
 
+        # Display most common used words
+        self.tDetails.append('<b>15 most common words:</b>')
+        self.tDetails.append('--------------------------------')
+        self.pList(fdist.most_common(15))
+        self.tDetails.append('\n')
+
+        self.tDetails.append('<b>15 most common nonstop words:</b>')
+        self.tDetails.append('--------------------------------------------')
+        self.pList(fdist1.most_common(15))
+        self.tDetails.append('\n')
+
+        self.tDetails.append('<b>15 most common stop words:</b>')
+        self.tDetails.append('-----------------------------------------')
+        self.pList(fdist_stopwords.most_common(15))
+        self.tDetails.append('\n')
+    
+        self.tDetails.append("<b>Most common #'s:</b>")
+        self.tDetails.append('-----------------------')
+        self.pList(fdist_hash.most_common(5))
+        self.tDetails.append('\n')
         
+        self.tDetails.append("<b>Most common @'s:</b>")
+        self.tDetails.append('-----------------------')
+        self.pList(fdist_at.most_common(15))
+        self.tDetails.append('\n')
+
+        # Set focus to top of the text box
+        self.tDetails.verticalScrollBar().setValue(0)
+
         # Plot the word cloud
 
         # discards the old graph
@@ -340,6 +362,7 @@ class Window(QtWidgets.QDialog):
 
         # create an axis
         ax = self.figure.add_subplot(111)
+        self.figure.subplots_adjust(bottom=0, top=1, left=0, right=1)
 
         # Generate word cloud
         wordcloud = WordCloud(stopwords=stop_words, max_words=50, background_color='white').generate(text)
@@ -348,7 +371,6 @@ class Window(QtWidgets.QDialog):
 
         # refresh canvas
         self.canvas.draw()
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
