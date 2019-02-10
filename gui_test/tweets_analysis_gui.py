@@ -144,6 +144,9 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.lStatusline.setText('Reading JSON file...')
         tweets = self.read_json(self.fileName)
 
+        # Clear text browser box
+        self.tAnalysis.clear()
+
         # Define stopwords dictionary
         # Read language combox selection
         lang = str(self.cLang.currentText()).lower()

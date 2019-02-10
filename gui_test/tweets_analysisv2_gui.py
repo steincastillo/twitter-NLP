@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Feb  2 12:40:34 2019
+Created on Sat Feb  2 12::34 2019
 
 @author: stein
 """
@@ -16,8 +16,6 @@ from wordcloud import WordCloud, ImageColorGenerator
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
-
-import random
 
 #############
 # Classes
@@ -78,7 +76,7 @@ class Window(QtWidgets.QDialog):
 
         # this is the Navigation widget
         # it takes the Canvas widget and a parent
-        self.toolbar = NavigationToolbar(self.canvas, self)
+        #self.toolbar = NavigationToolbar(self.canvas, self)    #matplot lib toolbar. Not needed for wordcloud
 
         # Add interface elements
         
@@ -112,8 +110,8 @@ class Window(QtWidgets.QDialog):
 
 
         # Just some button connected to `plot` method
-        self.button = QtWidgets.QPushButton('Plot')
-        self.button.clicked.connect(self.plot)
+        # self.button = QtWidgets.QPushButton('Plot')
+        # self.button.clicked.connect(self.plot)
         self.bSelectFile.clicked.connect(self.openFilenameDialog)
         self.bAnalyze.clicked.connect(self.tweetAnalyse)
 
@@ -122,9 +120,9 @@ class Window(QtWidgets.QDialog):
 
         layout.addLayout(headerLayout)
 
-        layout.addWidget(self.toolbar)
+        #layout.addWidget(self.toolbar) #matplot lib toolbar. Not needed for wordcloud
         layout.addWidget(self.canvas)
-        layout.addWidget(self.button)
+        # layout.addWidget(self.button)
 
         layout.addLayout(bottomLayout)
 
@@ -139,12 +137,8 @@ class Window(QtWidgets.QDialog):
         # discards the old graph
         self.figure.clear()
 
-        
-
         # create an axis
         ax = self.figure.add_subplot(111)
-
-        
 
         # plot data
         ax.plot(data, '*-')
@@ -193,6 +187,11 @@ class Window(QtWidgets.QDialog):
         return (text)
 
     def tweetAnalyse(self):
+
+        # Clear text browser boxes
+        self.tAnalysis.clear()
+        self.tDetails.clear()
+
         # Read the tweets file
         if self.fileName == '':
             return
@@ -315,17 +314,22 @@ class Window(QtWidgets.QDialog):
         line = '{} {}'.format('Unique words:'.ljust(25, ' '), len(text_vocab))
         self.tAnalysis.append(line)
         # line = 'Vocabulary richness         : {:.2f}%'.format(len(text_vocab)/len(tTokens)*100)
-        line = '{} {}'.format('Vocabulary richness:'.ljust(25, ' '), len(text_vocab)/len(tTokens)*100)
+        line = '{} {:.2f}'.format('Vocabulary richness:'.ljust(25, ' '), len(text_vocab)/len(tTokens)*100)
         self.tAnalysis.append(line)
-        line = 'Unique stopwords            : {}'.format(len(fdist_stopwords))
+        #line = 'Unique stopwords            : {}'.format(len(fdist_stopwords))
+        line = '{} {}'.format('Unique stopwords:'.ljust(25, ' '), len(fdist_stopwords))
         self.tAnalysis.append(line)
-        line = 'Unique profanity words      : {}'.format(len(fdist_badwords))
+        #line = 'Unique profanity words      : {}'.format(len(fdist_badwords))
+        line = '{} {:.0f}'.format('Unique profanity words:'.ljust(25, ' '), len(fdist_badwords))
         self.tAnalysis.append(line)
-        line = 'Total profanity words       : {}'.format(len(used_bad_words))
+        #line = 'Total profanity words       : {}'.format(len(used_bad_words))
+        line = '{} {:.0f}'.format('Total profanity words:'.ljust(25, ' '), len(used_bad_words))
         self.tAnalysis.append(line)
-        line = 'Adjusted vocabulary richness: {:.2f}'.format(adj_vocab_rich)
+        #line = 'Adjusted vocabulary richness: {:.2f}'.format(adj_vocab_rich)
+        line = '{} {:.2f}'.format('Adj. vocabulary richness:'.ljust(25, ' '), adj_vocab_rich)
         self.tAnalysis.append(line)
-        line = 'Reading time                : {:.1f} min.'.format(read_time)
+        #line = 'Reading time                : {:.1f} min.'.format(read_time)
+        line = '{} {:.1f}'.format('Reading time:'.ljust(25, ' '), read_time)
         self.tAnalysis.append(line)
 
         
