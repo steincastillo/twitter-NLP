@@ -1,6 +1,9 @@
 # twitter-NLP (WIP Thanks for your patience)
 **NLP (Natural Language Processing) python analyzer for twitter**  
 
+**Important:** Please note that the GUI functionality is currently being added to the library. A branch has been created
+for this effect. It will be promoted to the main branch soon. Thanks a lot for your patience.  
+
 ## What does it do?
 NLP for twitter is a collection of routines that will allow the user to download the tweets of an specific user
 and run NLP (Natural Language Processing) analysis.
